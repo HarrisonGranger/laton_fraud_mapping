@@ -10,6 +10,6 @@ gmap3.scatter( Charminar_top_attraction_lats, Charminar_top_attraction_lons, '#F
 # Plot method Draw a line in between given coordinates
 gmap3.plot(Charminar_top_attraction_lats, Charminar_top_attraction_lons, 'cornflowerblue', edge_width = 3.0)
 #Your Google_API_Key
-gmap3.apikey = " AIzaSyD5sAw22lbdNECc4Bi8DFn7jVc_66SbWrY " 
+gmap3.apikey = " API-KEY HERE " 
 # save it to html
 gmap3.draw("Map.html")
