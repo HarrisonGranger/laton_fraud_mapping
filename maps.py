@@ -65,6 +65,6 @@ for x in range(len(ll)):
 
 
 #Your Google_API_Key
-#gmap3.apikey = " AIzaSyD5sAw22lbdNECc4Bi8DFn7jVc_66SbWrY " 
+#gmap3.apikey = "#YOUR API KEY HERE" 
 # save it to html
 gmap3.draw("Map.html")
