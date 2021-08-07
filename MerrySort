@@ -1,0 +1,96 @@
+#!/bin/bash
+#MerrySort code authored by Harrison Granger 2020-2021
+#Liberty University 
+
+lat="NULL"
+lon="NULL" 
+color=0
+silent=1 
+printonly=0
+query=0 
+time=0 
+time2=0
+all=0 
+delete=0 
+mac="NULL"
+coor="NULL"
+filepath=`pwd`
+qtype=''
+
+while getopts 'c:plS:E:ADM:C:' arg
+	do
+		case ${arg} in 
+		c) echo 'color set to mode' ${OPTARG}; color=$OPTARG;; 
+		p) echo 'mode set to print only'; printonly=1;;
+		l) echo 'LOUD mode enabled!!!!'; silent='0';;
+		S) query=1; qtype='t'; time=$OPTARG;;
+		E) time2=$OPTARG;;
+		A) query=1; qtype='a'; all=1;;
+		M) query=1; qtype='m'; mac=$OPTARG;;
+		D) query=1; qtype='d';;
+		C) query=1; qtype='c'; coor=$OPTARG;;
+		?) echo 'what was that?'; exit 7;;  
+
+	esac
+done
+
+#user uploads new data
+if [[ $query == '0' ]]
+then 
+	echo $color > config.txt 
+	touch maps_output.txt 
+
+	#prompt user for file holding data set
+	echo "Welcome to MerrySort!"
+	echo "Path of file directory: "
+	read path
+	#enter directory 
+	cd $path
+
+	for dir in *$pwd
+	do
+		echo "[latitude longitude] -- file: $dir:"
+		read lat lon
+		
+		cat $dir | awk -F',' '{$1='$lat'; $2='$lon'; print $1" "$2" "$3" "$4}' >> $filepath/data.txt
+	done
+	cd $filepath
+	#create temporary file to store sorted coordinates to plot
+	touch map_coordinates.txt 
+	#now call cpp program to sort data in the data.txt and place them in map_coordinates.txt
+	./sort
+
+	if [[ $printonly == '0' ]] 
+	then
+	python maps.py 
+	#firefox Map.html&
+		if [[ $silent == '0' ]]
+		then
+		cat maps_output.txt
+		fi 
+	fi 
+
+	#cleanup files 
+	#rm map_coordinates.txt 
+	rm config.txt 
+	rm data.txt 
+
+	python upload.py 
+
+#user requests query
+else
+echo 'creating query...'
+touch order.txt
+	case $qtype in 
+		d) echo "D">>order.txt;;
+		t) echo "T">>order.txt;echo $time>>order.txt;echo $time2>>order.txt;;
+		a) echo "A">>order.txt;;
+		m) echo "M">>order.txt; echo $mac>>order.txt;;
+		c) echo "C">>order.txt; echo $coor>>order.txt;;
+		?) echo 'No valid query option!'; exit 7;;  
+	esac
+python query.py
+
+rm order.txt
+fi
+

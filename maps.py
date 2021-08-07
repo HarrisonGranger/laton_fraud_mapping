@@ -3,7 +3,7 @@ import csv
 
 random = False
 
-#first deal wth config file stuff 
+#changing color of lines:  
 with open("config.txt", newline='') as data: 
     config = [] 
     for x in data:
@@ -12,10 +12,8 @@ with open("config.txt", newline='') as data:
 data.close 
 
 if config[0]==0:
-    print("NO")
     config_Color = 0 
 else: 
-    print("YES")
     if config[0]==-1:
         random=True
     else:
@@ -35,26 +33,27 @@ def getcolor(colormarker):
 gmap3 = gmplot.GoogleMapPlotter(37.3504139, -79.1794932, 2) 
 color = ['red','green','cornflowerblue','yellow','purple','black','orange','grey','pink','white']
 colormarker = 0 #variable to choose colors  
-with open("temp.txt", newline='') as csvfile:
+with open("map_coordinates.txt", newline='') as csvfile:
     ll=[]
-    temp = csv.reader(csvfile, delimiter='\n')
-    for plots in temp:
+    map_coordinates = csv.reader(csvfile, delimiter='\n')
+    for plots in map_coordinates:
         ll.append(plots) 
 csvfile.close
 for x in range(len(ll)):
-    split=''.join(ll[x]).split(":")
-    lt1 =  split[0].split(",") 
-    lt2 =  split[1].split(",") 
-    a,o = zip(*[ ( int(float(lt1[0])),int(float(lt1[1])) ) , ( int(float(lt2[0])),int(float(lt2[1])) ) ])
-    lati1="latitude: "+lt1[0]+"\nlongitude: "+lt1[1]+";"
-    lati2="latitude: "+lt2[0]+"\nlongitude: "+lt2[1]+";"
+
+    split=''.join(ll[x]).split(' ') #breakout items from each matched row. Seperate with commas. 
+
+    a,o = zip(*[ ( int(float(split[0])),int(float(split[1])) ) , ( int(float(split[4])),int(float(split[5])) ) ])
+   #DELETE ME? )))
+    lati1="latitude: "+split[0]+"\nlongitude: "+split[1]+";"
+    lati2="latitude: "+split[4]+"\nlongitude: "+split[5]+";"
     # Scatter map
     gmap3.scatter( a, o, '#FF0000',size = 50)
     
-    b1="lat: "+str(lt1[0])+" lon: "+str(lt1[0])
-    b2="lat: "+str(lt2[0])+" lon: "+str(lt2[0])
-    gmap3.marker( int(float(lt1[0])), int(float(lt1[1])), title=b1 ) 
-    gmap3.marker( int(float(lt2[0])), int(float(lt2[1])), title=b2 )
+    b1="Latitude: "+str(split[0])+" Longitude: "+str(split[0])
+    b2="Latitude: "+str(split[4])+" Longitude: "+str(split[5])
+    gmap3.marker( int(float(split[0])), int(float(split[1])), title=b1 ) 
+    gmap3.marker( int(float(split[4])), int(float(split[5])), title=b2 )
     # Plot method Draw a line in between given coordinates
     gmap3.plot(a, o, getcolor(colormarker), edge_width = 2.0)
     if colormarker==9:
@@ -66,6 +65,6 @@ for x in range(len(ll)):
 
 
 #Your Google_API_Key
-#gmap3.apikey = "API_KEY HERE " 
+#gmap3.apikey = " AIzaSyD5sAw22lbdNECc4Bi8DFn7jVc_66SbWrY " 
 # save it to html
 gmap3.draw("Map.html")
